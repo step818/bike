@@ -7,7 +7,7 @@ public class BmxGame {
     public static void main(String[] args) {
         MainFrame frame = new MainFrame();
 
-        frame.setSize(1000, 700);
+        frame.setSize(1000, 650);
 
         // set the position of the frame with respect to screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

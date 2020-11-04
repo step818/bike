@@ -1,6 +1,8 @@
 package com.player;
 
+import com.client.MainFrame;
 import com.client.game.GamePanel;
+import com.terrain.Block;
 
 import java.awt.*;
 
@@ -44,16 +46,56 @@ public class Player {
         hitDummy = new Rectangle(x, y, width, height);
     }
 
-    public void set() {
+    public void set(Bike bike) {
         // controls response
+        //spacebar
+        //TODO: get creative and make a downwards slope to slide down, spacebar functionality might change
         if(!spaceBar) {
           xspeed *= 0.5;
           yspeed *= 0.5;
           pump = 0;
-        } else if(spaceBar) pump = 4;
+        } else if(spaceBar) {
+            pump = 2;
+        }
 
         // gravity
         yspeed = pump + 5;
+        xspeed = (pump/2);
+
+        // horizontal collisions
+        hitDummy.x += xspeed;
+        for(Block block: panel.track){
+            if(bike.hitBike.intersects(block.hitGround)){
+                bike.hitBike.x -= xspeed;
+                hitDummy.x -= xspeed;
+                while(!block.hitGround.intersects(bike.hitBike)){
+                    bike.hitBike.x += Math.signum(xspeed);
+                    hitDummy.x += Math.signum(xspeed);
+                }
+                bike.hitBike.x -= Math.signum(xspeed);
+                hitDummy.x -= Math.signum(xspeed);
+                xspeed = 0;
+                x = hitDummy.x;
+            }
+        }
+
+        // vertical collisions
+        hitDummy.y += yspeed;
+        for(Block block: panel.track){
+            if(bike.hitBike.intersects(block.hitGround)){
+                bike.hitBike.y -= yspeed;
+                hitDummy.y -= yspeed;
+                while(!block.hitGround.intersects(bike.hitBike)){
+                    bike.hitBike.y += Math.signum(yspeed);
+                    hitDummy.y += Math.signum(yspeed);
+                }
+                bike.hitBike.y -= Math.signum(yspeed);
+                hitDummy.y -= Math.signum(yspeed);
+                yspeed = 0;
+                y = hitDummy.y;
+            }
+        }
+
 
         x = (int) (x + xspeed);
         y = (int) (y + yspeed);
